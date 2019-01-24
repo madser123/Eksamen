@@ -2,17 +2,26 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Welcome</title>
+    <link rel="stylesheet" href="css/main.css">
+    <title>Sign In</title>
   </head>
   <body>
-    <header>
+    <header id="header">
+      <span class="pageTitle">Sign In</span>
     </header>
-    <section>
-      <form action="script/userCheck.php" method="post">
-        <input type="username" name="uName"><br>
-        <input type="password" name="uPass">
-      </form><br><br>
-      <a href="register.html"><button id="buttonMedium">Register</button></a>
+    <section id="content">
+      <div class="form">
+        <form action="script/login.php" method="post">
+          <span class="formText">Username: </span>
+          <input class="input" type="username" name="userName" placeholder="Username"><br>
+          <span class="formText">Password: </span>
+          <input class="input" type="password" name="password" placeholder="Password"><br>
+          <input type="submit" name="submit" class="buttonMedium">
+        </form>
+      </div>
+      <a href="register.html"><button class="buttonMedium">Sign up</button></a>
     </section>
+    <footer id="footer">
+    </footer>
   </body>
 </html>
