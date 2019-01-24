@@ -1,12 +1,6 @@
 <?php
-include "../script/dbCluster.php";
-include "../script/userVars.php";
-
-if(sessionCheck()) {
-
-}else {
-
-};
+include_once "../script/userVars.php";
+include_once "../script/dbCluster.php";
  ?>
 <html>
   <head>
@@ -16,7 +10,7 @@ if(sessionCheck()) {
   </head>
 <body>
   <header id="header">
-    <span class="pageTitle">Sign In</span>
+    <span class="pageTitle">Welcome</span>
   </header>
   <section id="content">
     <div class="background">

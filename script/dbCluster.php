@@ -8,57 +8,58 @@ if($GLOBALS['debug']){
 }
 
 /* Variables */
-$connPreDB      = new mysqli("localhost", "root", "");
-$connPostDB     = mysqli_connect("localhost", "root", "", "eksamen");
+$conn = mysqli_connect("localhost", "root", "");
 
 /*
  * Funktion til at oprette alt i databasen.
  */
 function createAll() {
 
-  global $connPreDB, $connPostDB;
+  global $conn;
 
 if ($GLOBALS['debug']){
-  if($connPreDB->connect_error) {
-    die("<br>DEBUG: Connection not achieved" . $conn->connect_error . "<br>")
+  if($conn->connect_error) {
+    die("<br>DEBUG: Connection not achieved" . $conn->connect_error . "<br>");
   }
   echo "<br>DEBUG: Connection Achieved.<br>";
 }
 
-createDB($connPreDB);
-createUserTable($connPostDB);
+createDB($conn);
+createUserTable($conn);
+createInterestsTable($conn);
+createJunctionTable($conn);
 
 return;
 };
 
 /*
- * Funktion til at oprette database.
+ * Funktioner til at oprette database.
  */
 function createDB($conn) {
 
-  $sql = "CREATE DATABASE eksamen";
+  $sql = "CREATE DATABASE db";
   $query = $conn->query($sql);
 
   if($GLOBALS['debug']){
-    if($DBRequest) {
+    if($query) {
       echo "<br>DEBUG: DB Created.<br>";
     } else {
-      echo "<br>DEBUG: DB Creation Error: " . $conn->error . "<br>"
+      echo "<br>DEBUG: DB Creation Error: " . $conn->error . "<br>";
     }
   }
-
 };
 
 function createUserTable($conn) {
 
-  $sql = "CREATE TABLE users (
+  $sql = "CREATE TABLE db.users (
     ID int UNSIGNED AUTO_INCREMENT primary key,
     firstName VARCHAR(99),
     lastName VARCHAR(99),
     email VARCHAR(99),
     userName VARCHAR(99),
     password VARCHAR(99),
-    filter FLOAT
+    filter FLOAT,
+    role FLOAT
   )";
   $query = $conn->query($sql);
 
@@ -66,15 +67,14 @@ function createUserTable($conn) {
     if($query) {
       echo "<br>DEBUG: Table 'users' Created.<br>";
     } else {
-      echo "<br>DEBUG: Creation of Table 'users' Error: " . $conn->error . "<br>"
+      echo "<br>DEBUG: Creation of Table 'users' Error: " . $conn->error . "<br>";
     }
   }
-
 };
 
 function createInterestsTable($conn) {
 
-  $sql = "CREATE TABLE interests (
+  $sql = "CREATE TABLE db.interests (
     ID int UNSIGNED AUTO_INCREMENT primary key,
     name VARCHAR(99)
   )";
@@ -84,15 +84,14 @@ function createInterestsTable($conn) {
     if($query) {
       echo "<br>DEBUG: Table 'interests' Created.<br>";
     } else {
-      echo "<br>DEBUG: Creation of Table 'interests' Error: " . $conn->error . "<br>"
+      echo "<br>DEBUG: Creation of Table 'interests' Error: " . $conn->error . "<br>";
     }
   }
-
 };
 
 function createJunctionTable($conn) {
 
-  $sql = "CREATE TABLE junction (
+  $sql = "CREATE TABLE db.junction (
     ID int AUTO_INCREMENT primary key,
     interestID INT UNSIGNED,
     userID INT UNSIGNED,
@@ -105,98 +104,130 @@ function createJunctionTable($conn) {
     if($query) {
       echo "<br>DEBUG: Table 'junction' Created.<br>";
     } else {
-      echo "<br>DEBUG: Creation of Table 'junction' Error: " . $conn->error . "<br>"
+      echo "<br>DEBUG: Creation of Table 'junction' Error: " . $conn->error . "<br>";
     }
   }
-
 };
+
+function deleteDB() {
+
+  global $conn;
+
+  $sql = "DROP DATABASE db";
+  $query = $conn->query($sql);
+
+  if($GLOBALS['debug']) {
+    echo "<br>DEBUG: Dropping database. <br>";
+    if($query){
+      echo "<br>DEBUG: Database deleted. <br>";
+    } else {
+      echo "<br>DEBUG: Error during deletion of database. " . $conn->error . "<br>";
+    }
+  }
+}
 
 /*
  * DATABASE REQUESTS
  */
-function createUser($conn, $firstName, $lastName, $email, $userName, $password, $filter) {
+function createUser($firstName, $lastName, $email, $userName, $password, $filter, $role) {
 
-  $sql = "INSERT INTO users (`firstName`, `lastName`, `email`, `userName`, `password`, `filter`)
-  VALUES ('$firstName', '$lastName', '$email', '$userName', '$password', '$filter')";
+  global $conn;
+
+  $sql = "INSERT INTO db.users (`firstName`, `lastName`, `email`, `userName`, `password`, `filter`, `role`)
+  VALUES ('$firstName', '$lastName', '$email', '$userName', '$password', '$filter', '$role')";
   $query = $conn->query($sql);
 
   if($GLOBALS['debug']) {
     if($query) {
       echo "<br>DEBUG: User '" . $userName . "' created.<br>";
     } else {
-      echo "<br>DEBUG: User not created. Error: " . $conn->error . "<br>"
+      echo "<br>DEBUG: User not created. Error: " . $conn->error . "<br>";
     }
   }
-
 };
 
-function deleteUser($conn, $userID) {
+function deleteUser($userID) {
 
-  global $connPostDB;
+  global $conn;
 
-  $sql = "";
+  $sql = "DELETE FROM db.users WHERE ID='" . $userID . "'";
+  $query = $conn->query($sql);
+
+  if($GLOBALS['debug']) {
+    if($query) {
+      echo "<br>DEBUG: User (ID: " . $userID . ") deleted.<br>";
+    } else {
+      echo "<br>DEBUG: User (ID: " . $userID . ") not deleted. Error: " . $conn->error . "<br>";
+    }
+  }
 };
 
-function addInterest($conn, $interestID, $userID) {
+function addInterest($interestID, $userID) {
 
-  global $connPostDB;
+  global $conn;
 
-  $sql = "INSERT INTO junction (`interstID`, `userID`)
+  $sql = "INSERT INTO db.junction (`interestID`, `userID`)
   VALUES ('$interestID', '$userID')";
   $query = $conn->query($sql);
 
   if($GLOBALS['debug']) {
     if($query) {
       echo "<br>DEBUG: Interest (ID: " . $inerestID . ") added to user (ID: " . $userID . ")<br>";
+    } else {
+      echo "<br>DEBUG: Problem with adding interest (ID: " . $inerestID . ") to user (ID: " . $userID . ")";
+      echo "<br>Error: " . $conn->error . "<br>";
     }
-    echo "<br>DEBUG: Problem with adding interest (ID: " . $inerestID . ") to user (ID: " . $userID . ")";
-    echo "<br>Error: " . $conn->error . "<br>";
   }
-
 };
 
-function removeInterest() {
+function removeInterest($userID, $interestID) {
 
-  global $connPostDB;
+  global $conn;
 
-  $sql = "";
+  $sql = "DELETE FROM db.junction WHERE interestID='" . $interestID . "' userID='" . $userID . "'";
+  $query = $conn->query($sql);
 
+  if($GLOBALS['debug']) {
+    if($query) {
+      echo "<br>DEBUG: Interest (ID: " . $interestID . ") deleted from user (ID: " . $userID . ")";
+    } else {
+      echo "<br>DEBUG: Interest (ID: " . $interestID . ") not deleted from user (ID: " . $userID . "). Error: " . $conn->error . "<br>";
+    }
+  }
 };
-
 
 /*
  * LOGINSYSTEM
  */
 function verifyUser($userName, $password) {
 
-global $connPostDB;
+global $conn;
 
-  if(verifyUsername($connPostDB, $userName)){
-    if(verifyUsernameAndPassword($connPostDB, $userName, $password)){
-        getUserDataAndLogIn($connPostDB, $userName)
+  if(verifyUsername($conn, $userName)){
+    if(verifyUsernameAndPassword($conn, $userName, $password)){
+        fetchUserDataAndLogIn($conn, $userName);
+        /* CALL JAVASCRIPT FUNC */
     } else {
       if($GLOBALS['debug']){
         echo "Something went wrong. Not logged in.";
-      } else {
-        /* CALL JAVASCRIPT FUNC */
       }
     }
+      /* CALL JAVASCRIPT FUNC */
+  } else {
     if($GLOBALS['debug']) {
       echo "Something went wrong. Not logged in.";
     }
-  } else {
-    /* CALL JAVASCRIPT FUNC */
   }
 };
 
 function verifyUsername($conn, $userName) {
 
-  $sql = "SELECT * FROM users WHERE navn='" . $userName . "' LIMIT 1";
+  $sql = "SELECT * FROM db.users WHERE userName='" . $userName . "' LIMIT 1";
   $result = $conn->query($sql);
   $row = $result->fetch_assoc();
 
   if($GLOBALS['debug']) {
-    echo "<br>Check if user: '" . $userName . "' exists in DB."
+    echo "<br>Check if user: '" . $userName . "' exists in db.";
     echo "<br> RESULT: ";
 
     if($row !=null ? TRUE : FALSE) {
@@ -211,7 +242,7 @@ function verifyUsername($conn, $userName) {
 
 function verifyUsernameAndPassword($conn, $userName, $password) {
 
-  $sql = "SELECT ID FROM users WHERE password = '" . $password . "' AND userName = '" . $userName . "' LIMIT 1";
+  $sql = "SELECT ID FROM db.users WHERE password = '" . $password . "' AND userName = '" . $userName . "' LIMIT 1";
   $result = $conn->query($sql);
   $row = $result->fetch_assoc();
 
@@ -225,31 +256,68 @@ function verifyUsernameAndPassword($conn, $userName, $password) {
       echo "User '" . $userName . "' with Password: '" . $password . "' doesn't exist. Error: " . $conn->error . "<br>";
     }
   }
-
 return $row != null ? TRUE : FALSE;
 };
 
-function getUserDataAndLogIn($conn, $userName) {
-  $sql = "SELECT * FROM users WHERE userName = '" . $userName . "'";
-  $result = $conn->query($sql);
-  $row = $result->fetch_assoc();
+function fetchUserDataAndLogIn($conn, $userName) {
 
-  sessionCheck();
+  if(sessionCheck()) {
+    session_unset();
+    session_destroy();
+  }
 
-  $_SESSION['ID']         = $row['ID'];
-  $_SESSION['firstName']  = $row['firstName'];
-  $_SESSION['lastName']   = $row['lastName'];
-  $_SESSION['email']      = $row['email'];
-  $_SESSION['userName']   = $row['userName'];
-  $_SESSION['filter']     = $row['filter'];
+  session_start();
+
+  fetchUserData($conn, $userName);
 
   if($GLOBALS['debug']) {
-    echo "<br>DEBUG: Session Variables Set<br>";
-    echo "<a href='../dashboard/welcome.php'><button>Go to dashboard</button></a>";
+    if(isset($_SESSION['ID'])) {
+      echo "<br>DEBUG: Session variables NOT set";
+      echo "<br><a href='../dashboard/welcome.php'><button>Go to dashboard</button></a><br>";
+    } else {
+      echo "<br>DEBUG: Session Variables Set";
+      echo "<br><a href='../dashboard/welcome.php'><button>Go to dashboard</button></a><br>";
+    }
   } else {
     header('Location: ../dashboard/welcome.php');
   }
+};
 
+function fetchUserData($conn, $userName) {
+  $sql = "SELECT * FROM db.users WHERE userName = '" . $userName . "'";
+  $result = $conn->query($sql);
+  $row = $result->fetch_assoc();
+
+  $_SESSION['ID'] = $row['ID'];
+  $_SESSION['firstName'] = $row['firstName'];
+  $_SESSION['lastName'] = $row['lastName'];
+  $_SESSION['email'] = $row['email'];
+  $_SESSION['userName'] = $row['userName'];
+  $_SESSION['filter'] = $row['filter'];
+  $_SESSION['role'] = $row['role'];
+
+
+  if($GLOBALS['debug']) {
+    echo "DEBUG: SESSION VARIABLES<br>";
+    echo "DEBUG: ID:        " . $_SESSION['ID'] . "<br>";
+    echo "DEBUG: firstName: " . $_SESSION['firstName'] . "<br>";
+    echo "DEBUG: lastName:  " . $_SESSION['lastName'] . "<br>";
+    echo "DEBUG: email:     " . $_SESSION['email'] . "<br>";
+    echo "DEBUG: userName:  " . $_SESSION['userName'] . "<br>";
+    echo "DEBUG: filter:    " . $_SESSION['filter'] . "<br>";
+    echo "DEBUG: role:      " . $_SESSION['role'] . "<br>";
+  }
+};
+
+function doesDBExist($DBName) {
+
+  $conn = mysqli_connect("localhost", "root", "", $DBName);
+
+  if(!$conn) {
+    return FALSE;
+  } else {
+    return TRUE;
+  }
 };
 
 /*
@@ -257,14 +325,15 @@ function getUserDataAndLogIn($conn, $userName) {
  */
 function sessionCheck() {
   if(session_id() == '' || !isset($_SESSION)) {
-    session_start();
     if($GLOBALS['debug']) {
-      echo "<br>DEBUG: Session Started<br>";
+      echo "<br>DEBUG: Session not running<br>";
+    }
+    return FALSE;
+  } else {
+    if($GLOBALS['debug']) {
+      echo "<br>DEBUG: Session running<br>";
     }
     return TRUE;
-  } else {
-    echo "<br>DEBUG: Session Running<br>";
-    return FALSE;
   }
 };
  ?>
