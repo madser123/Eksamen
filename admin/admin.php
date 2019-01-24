@@ -91,9 +91,6 @@ if($GLOBALS['debug']) {
           };
         ?>
         <div id="searchResult">
-          <?php
-          
-          ?>
         </div>
         <?php
         };

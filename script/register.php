@@ -15,7 +15,7 @@ createUser($firstName, $lastName, $email, $userName, $password, $filter, $role);
 if($GLOBALS['debug']) {
   echo "<a href='../index.php'><button>Go back</button></a>";
 } else {
-  header("Location: ../index.php");
+  header("Location: ../index.html");
 }
 
 ?>
