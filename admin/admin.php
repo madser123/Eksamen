@@ -4,14 +4,6 @@ session_start();
 include "../script/dbCluster.php";
 include "../script/adminCluster.php";
 
-if (isset($_POST['searchValue'])) {
-  if($GLOBALS['debug']) {
-    searchDB($_POST['searchValue']);
-  } else {
-    searchDB($_POST['searchValue']);
-  }
-};
-
 $sql = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'eksamen'";
 $query = $conn->query($sql);
 
@@ -63,39 +55,87 @@ if($GLOBALS['debug']) {
           <input class="input" type="text" name="searchValue">
           <input class="input" type="submit" name="search">
         </form>
-        <?php
-        function searchDB($search) {
-
-          global $conn;
-
-          $sql = "SELECT * FROM db.users WHERE username LIKE '%$search%'";
-          $result = $conn->query($sql);
-          $row = $result->fetch_assoc();
-          $num = $result->num_rows;
-
-          if($GLOBALS['debug']) {
-            echo "<br>DEBUG: Search query: " . $search . "<br>";
-            echo "DEBUG: Number of results: " . $num . "<br>";
-          }
-
-          $temp = array();
-
-          if($result) {
-            for($i = 0; $i <= $result->num_rows; $i++) {
-              array_push($temp, $row['ID']);
-            }
-            $_SESSION['search'] = $temp;
-            echo "DEBUG: Index 0: " . $_SESSION['search'][0] . "<br>";
-          } else {
-            echo "<br>DEBUG: Error during search: " . $conn->error . "<br>";
-          };
-        ?>
         <div id="searchResult">
-        </div>
-        <?php
-        };
-        ?>
-      </div>
+          <table border="0" cellspacing="2" cellpadding="2">
+            <tr>
+              <td>
+                <b>ID</b>
+              </td>
+              <td>
+                <b>Name</b>
+              </td>
+              <td>
+                <b>Email</b>
+              </td>
+              <td>
+                <b>Username</b>
+              </td>
+              <td>
+                <b>Filter</b>
+              </td>
+              <td>
+                <b>Role</b>
+              </td>
+            </tr>
+            <?php
+              if(isset($_POST['searchValue'])) {
+                $search = $_POST['searchValue'];
+
+                $search_sql = "SELECT * FROM db.users WHERE userName LIKE '%$search%'";
+                $search_result = $conn->query($search_sql);
+
+                if($GLOBALS['debug']) {
+                  echo "<br>DEBUG: Search query: " . $search . "<br>";
+                }
+
+                if($search_result->num_rows > 0) {
+                  while($row=$search_result->fetch_assoc()) {
+                    $search_ID = $row['ID'];
+                    $search_firstName = $row['firstName'];
+                    $search_lastName = $row['lastName'];
+                    $search_email = $row['email'];
+                    $search_userName = $row['userName'];
+                    $search_filter = $row['filter'];
+                    $search_role = $row['role'];
+
+                    $search_name = $search_firstName . " " . $search_lastName;
+                    ?>
+                    <tr>
+                      <td>
+                        <b><?php echo $search_ID; ?></b>
+                      </td>
+                      <td>
+                        <b><?php echo $search_name; ?></b>
+                      </td>
+                      <td>
+                        <b><?php echo $search_email; ?></b>
+                      </td>
+                      <td>
+                        <b><?php echo $search_userName; ?></b>
+                      </td>
+                      <td>
+                        <b><?php echo $search_filter; ?></b>
+                      </td>
+                      <td>
+                        <b><?php echo $search_role; ?></b>
+                      </td>
+                    </tr>
+                    <?php
+                  }
+                } else {
+                  echo "No results found";
+                  if($GLOBALS['debug']) {
+                    echo "<br>DEBUG: Error: " . $conn->error;
+                  }
+                }
+              } else {
+                if($GLOBALS['debug']) {
+                  echo "<br>DEBUG: No search query set <br>";
+                }
+              }
+                ?>
+              </div>
+            </div>
     </section>
     <footer id="footer">
     </footer>
