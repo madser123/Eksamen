@@ -133,16 +133,58 @@ function createUser($firstName, $lastName, $email, $userName, $password, $filter
 
   global $conn;
 
-  $sql = "INSERT INTO db.users (`firstName`, `lastName`, `email`, `userName`, `password`, `filter`, `role`)
-  VALUES ('$firstName', '$lastName', '$email', '$userName', '$password', '$filter', '$role')";
-  $query = $conn->query($sql);
+  if(doesUserExist($conn, $userName, $email)){
 
-  if($GLOBALS['debug']) {
-    if($query) {
-      echo "<br>DEBUG: User '" . $userName . "' created.<br>";
-    } else {
-      echo "<br>DEBUG: User not created. Error: " . $conn->error . "<br>";
+    $sql = "INSERT INTO db.users (`firstName`, `lastName`, `email`, `userName`, `password`, `filter`, `role`)
+    VALUES ('$firstName', '$lastName', '$email', '$userName', '$password', '$filter', '$role')";
+    $query = $conn->query($sql);
+
+    if($GLOBALS['debug']) {
+      if($query) {
+        echo "<br>DEBUG: User '" . $userName . "' created.<br>";
+      } else {
+        echo "<br>DEBUG: User not created. Error: " . $conn->error . "<br>";
+      }
     }
+  }
+};
+
+function doesUserExist($conn, $userName, $email) {
+  if(nameCheck($conn, $userName)) {
+    if(emailCheck($conn, $email)) {
+      return true;
+    } else {
+      echo "Email already in use.";
+      return false;
+    }
+  } else {
+    echo "Username already in use.";
+    return false;
+  }
+
+};
+
+function nameCheck($conn, $userName) {
+
+  $sql = "SELECT * FROM db.users WHERE userName LIKE '%$userName%'";
+  $result = $conn->query($sql);
+
+  if($result->num_rows > 0) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+function emailCheck($conn, $email) {
+
+  $sql = "SELECT * FROM db.users WHERE email LIKE '%$email%'";
+  $result = $conn->query($sql);
+
+  if($result->num_rows > 0) {
+    return true;
+  } else {
+    return false;
   }
 };
 
