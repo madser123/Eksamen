@@ -1,0 +1,23 @@
+{
+  "name": "eksamen",
+  "version": "1.0.0",
+  "description": "Eksamen",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/madser123/Eksamen.git"
+  },
+  "author": "Mads Ahlquist Jensen & Lucas Bang Ingvartsen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/madser123/Eksamen/issues"
+  },
+  "homepage": "https://github.com/madser123/Eksamen#readme",
+  "dependencies": {
+    "electron": "^4.0.6",
+    "mysql": "^2.16.0"
+  }
+}

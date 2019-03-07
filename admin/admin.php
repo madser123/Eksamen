@@ -76,6 +76,8 @@ if($GLOBALS['debug']) {
               <td>
                 <b>Role</b>
               </td>
+              <td>
+              </td>
             </tr>
             <?php
               if(isset($_POST['searchValue'])) {
@@ -100,26 +102,26 @@ if($GLOBALS['debug']) {
 
                     $search_name = $search_firstName . " " . $search_lastName;
                     ?>
-                    <tr>
-                      <td>
-                        <b><?php echo $search_ID; ?></b>
-                      </td>
-                      <td>
-                        <b><?php echo $search_name; ?></b>
-                      </td>
-                      <td>
-                        <b><?php echo $search_email; ?></b>
-                      </td>
-                      <td>
-                        <b><?php echo $search_userName; ?></b>
-                      </td>
-                      <td>
-                        <b><?php echo $search_filter; ?></b>
-                      </td>
-                      <td>
-                        <b><?php echo $search_role; ?></b>
-                      </td>
-                    </tr>
+                      <tr>
+                        <td>
+                          <b><?php echo $search_ID; ?></b>
+                        </td>
+                        <td>
+                          <b><?php echo $search_name; ?></b>
+                        </td>
+                        <td>
+                          <b><?php echo $search_email; ?></b>
+                        </td>
+                        <td>
+                          <b><?php echo $search_userName; ?></b>
+                        </td>
+                        <td>
+                          <b><?php echo $search_filter; ?></b>
+                        </td>
+                        <td>
+                          <b><?php echo $search_role; ?></b>
+                        </td>
+                      </tr>
                     <?php
                   }
                 } else {

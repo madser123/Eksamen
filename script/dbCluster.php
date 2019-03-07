@@ -8,7 +8,7 @@ if($GLOBALS['debug']){
 }
 
 /* Variables */
-$conn = mysqli_connect("localhost", "root", "");
+$conn = mysqli_connect("fdb26.biz.nf", "2976574_db", "QgT48vsB", "2976574_db");
 
 /*
  * Funktion til at oprette alt i databasen.
@@ -161,7 +161,6 @@ function doesUserExist($conn, $userName, $email) {
     echo "Username already in use.";
     return false;
   }
-
 };
 
 function nameCheck($conn, $userName) {
@@ -278,7 +277,6 @@ function verifyUsername($conn, $userName) {
       echo "User '" . $userName . "' doesn't exist. Error: " . $conn->error . "<br>";
     }
   }
-
   return $row !=null ? TRUE : FALSE;
 };
 
