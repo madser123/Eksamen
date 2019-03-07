@@ -47,7 +47,7 @@ header {
 #content {
   margin: 0 10%;
   width: 80%;
-  background-color: #FFF;
+  background-color: #FF7F11;
   padding: 60px 0;
 }
 
@@ -73,6 +73,18 @@ header {
   font-size: 18px;
 }
 
+img {
+  border-radius: 110%;
+  width:40%;
+  height:auto;
+  position: relative;
+  padding: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  background-color:#ffffff;
+  margin-bottom: 50px;
+}
 
 
  /*
@@ -102,7 +114,7 @@ footer {
 
 .buttonMedium {
   border: none;
-  background-color: #488cf9;
+  background-color: #603813;
   color: #FFFFFF;
   font-size: 15px;
   cursor: pointer;
