@@ -1,15 +1,9 @@
-// TESTING ENVIROMENT
-
-function consoleTest() {
-  return true;
-}
-
 // VARIABLES
+
 var numRows;
 var result;
 
 var mysql = require('mysql');
-
 
 var connection = mysql.createConnection({
   host        : 'localhost',
@@ -17,7 +11,9 @@ var connection = mysql.createConnection({
   password    : '',
   database    : 'db'
 })
+
 // FUNCTIONS
+
 function conn(sql) {
   connection.query(sql, (error, results, field) => {
     if (error) {
