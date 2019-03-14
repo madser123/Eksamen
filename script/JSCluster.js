@@ -1,11 +1,15 @@
 /*
  * GLOBAL VARIABLES
  */
+const storage = require("electron-json-storage");
+const mysql   = require("mysql");
 
-var mysql = require("mysql");
+const defaultDataPath = storage.getDefaultDataPath();
 
 var numRows;
 var result;
+var user;
+
 
 /*
  * CONNECTION SETUP
@@ -37,6 +41,7 @@ function conn(sql) {
 /*
  * DATABASE SETUP
  */
+
  async function createAll() {
    await createDB();
    await createUserTable();
@@ -70,18 +75,7 @@ async function deleteDB() {
  * FUNCTIONS
  */
 
-/*
- * ucFirst() gør så det første tegn i en string bliver til et uppercase.
- *
- * Eksempel:
- *
- * ucFirst("hello world") => "Hello world"
- *
- */
-
- function ucFirst(string) {
-     return string.charAt(0).toUpperCase() + string.slice(1);
- }
+ // REGISTRATION
 
  /*
   * createUser() denne funktion står for at anskaffe og sammenligne data
@@ -110,11 +104,134 @@ async function createUser() {
     } else {
       console.log("Registration complete");
       conn("INSERT INTO users (`firstName`,`lastname`,`email`,`userName`,`password`,`filter`,`role`) VALUES ('"+firstName+"','"+lastName+"','"+email+"','"+userName+"','"+password+"','"+filter+"','"+role+"')");
+      redirect('../index.html');
     }
   } else {
     console.log("Form field empty");
   }
 };
+
+// LOGIN
+
+/*
+ * login()
+ */
+
+async function login() {
+
+  var userName = document.getElementsByName("userName");
+  var password = document.getElementsByName("password");
+
+  if(validateForm('login')) {
+    var sql     = "SELECT * FROM db.users WHERE ?? = ?";
+    var inserts = ["userName", userName];
+    sql         = mysql.format(sql, inserts);
+
+    connResult = await conn(sql);
+
+    var dbUsername;
+    var dbPassword;
+    var autologin;
+
+    if(connResult === 'resolved') {
+      dbUserName = result[0]["userName"];
+      dbPassword = result[0]["password"];
+    } else {
+      console.log(connResult);
+    }
+
+    if(document.getElementsByName("autoLogin").checked) {
+      autoLogin = true;
+    } else {
+      autoLogin = false;
+    }
+
+    if(verifyUser(userName, password, dbUserName, dbPassword)) {
+      storeUser(connResult, autoLogin);
+      if(await fetchUserData(userName)) {
+        redirect('../dashboard/welcome.html');
+      }
+    }
+  }
+};
+
+/*
+ * verifyUser()
+ */
+
+function verifyUser(userName, password, dbUserName, dbPassword) {
+
+  if(compare(dbUserName, userName)){
+    console.log("UserName exists");
+
+    if(compare(dbPassword, password)) {
+      console.log("password exists");
+      return true;
+
+    } else {
+      console.log("Wrong password");
+      document.getElementById("formWarning").innerHTML
+      return false;
+
+    }
+  } else {
+    console.log("userName doesn't exist");
+    return false;
+
+  }
+};
+
+// DATABASE REQUESTS
+
+/*
+ * deleteUser()
+ */
+
+async function deleteUser(userID) {
+
+  var sql     = "DELETE FROM db.users WHERE ?? = ?";
+  var inserts = ["ID", userID];
+  sql         = mysql.format(sql, inserts);
+
+  if(alert('Are you sure you want to delete this account?')) {
+    var connResult = await conn(sql);
+
+  } else {
+    console.log('Account deletion aborted.');
+
+  }
+};
+
+
+/*
+ * addInterest()
+ */
+
+async function addInterest(interestID, userID) {
+  var sql     = "INSERT INTO db.junction (`interestID`, `userID`) VALUES (??, ?)";
+  var inserts = [interestID, userID];
+  sql         = mysql.format(sql, inserts);
+
+  await conn(sql);
+
+  console.log('Interest added');
+};
+
+
+/*
+ * removeInterest()
+ */
+
+async function removeInterest(interestID, userID) {
+  var sql     = "DELETE FROM db.junction WHERE ?? = ?? ?? = ?";
+  var inserts = ["interestID", interestID, "userID", userID];
+  sql         = mysql.format(sql, inserts);
+
+  await conn(sql);
+
+  console.log("interest removed");
+};
+
 
 /*
  * doesUserExist() checker om et brugernavn og en email allerede kan findes i databasen.
@@ -149,21 +266,66 @@ async function doesUserExist(user, email) {
 };
 
 /*
- * compare() sammenligner to values.
- *
- * Eksempel:
- *
- * compare(1, 2) = FALSE
- *
- * compare('hej', 'hej') = TRUE
+ * fetchUserData()
  */
 
-function compare(a, b) {
-  if(a === b) {
-    return true;
-  } else {
-    return false;
+async function fetchUserData(userName) {
+  var sql = "SELECT * FROM db.users WHERE ?? = ?";
+  var inserts = ["userName", userName];
+  sql = mysql.format(sql, inserts);
+
+  connResult = await conn(sql);
+
+  await getUser(userName);
+};
+
+// STORAGE MANAGEMENT
+
+/*
+ * storeUser()
+ */
+
+function storeUser(connResult, autologin) {
+  if(connResult === 'resolved') {
+    if(autoLogin === true) {
+      console.log('autoLogin: True')
+      storage.set('user', {
+        id       : result[0]["ID"],
+        firstName: result[0]["firstName"],
+        lastName : result[0]["lastName"],
+        email    : result[0]["email"],
+        userName : result[0]["userName"],
+        filter   : result[0]["filter"],
+        role     : result[0]["role"],
+        autoLogin: autologin
+      }, function(error) {
+        if (error) throw error;
+      });
+    } else {
+      storage.set(result[0]["userName"], {
+        id       : result[0]["ID"],
+        firstName: result[0]["firstName"],
+        lastName : result[0]["lastName"],
+        email    : result[0]["email"],
+        userName : result[0]["userName"],
+        filter   : result[0]["filter"],
+        role     : result[0]["role"]
+      }, function(error) {
+        if (error) throw error;
+      });
+    }
   }
+};
+
+/*
+ * getUser()
+ */
+
+function getUser(userName) {
+  storage.get(userName, function(error, object) {
+    if (error) throw error;
+    user = object;
+  });
 };
 
 /*
@@ -196,3 +358,37 @@ function validateForm(form) {
   }
   return true;
 };
+
+
+/*
+ * compare() sammenligner to values.
+ *
+ * Eksempel:
+ *
+ * compare(1, 2) = FALSE
+ *
+ * compare('hej', 'hej') = TRUE
+ */
+
+function compare(a, b) {
+  if(a === b) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+
+
+/*
+ * ucFirst() gør så det første tegn i en string bliver til et uppercase.
+ *
+ * Eksempel:
+ *
+ * ucFirst("hello world") => "Hello world"
+ *
+ */
+
+ function ucFirst(string) {
+     return string.charAt(0).toUpperCase() + string.slice(1);
+ }
