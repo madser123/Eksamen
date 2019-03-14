@@ -1,0 +1,12 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# npm startup file
+start.bat
+
+# Testing environment
+test.css
+TEST.html
+test.js
