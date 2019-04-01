@@ -3,13 +3,15 @@ logs
 *.log
 npm-debug.log*
 
+# PHP
+*.php
+
 # npm startup file
 start.bat
 
-# Testing environment
-test.css
-TEST.html
-test.js
+# Testing environments
+/connTest
+/commTest
 
 # Unused pictures
 logo.png
