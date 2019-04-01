@@ -1,0 +1,71 @@
+/*
+ * GENERAL SETTINGS
+ */
+body {
+  margin: 0;
+  background-color: #FF7F11;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#content {
+  margin: 0 10%;
+  width: 80%;
+  background-color: #FF7F11;
+  padding: 60px 0;
+}
+
+.form {
+  width: 40%;
+  margin: 0 30% 10px 30%;
+}
+
+.input {
+  padding: 4px 6px;
+  width: 40%;
+  border: none;
+  border-bottom: solid 1px #603813;
+  margin: 0 0 40px 0;
+  font-size: 18px;
+  text-align: center;
+  margin-left:auto;
+  margin-right:auto;
+  display: block;
+}
+
+img {
+  border-radius: 110%;
+  width:40%;
+  height:auto;
+  position: relative;
+  padding: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  background-color:#ffffff;
+  margin-bottom: 50px;
+}
+
+.formText {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.buttonMedium {
+  border: none;
+  background-color: #603813;
+  color: #FFFFFF;
+  font-size: 15px;
+  cursor: pointer;
+  transition: .2s;
+  border: solid 1px #603813;s
+}
+
+.buttonMedium:hover {
+  transition: .2s;
+  background-color: #FFFFFF;
+  color: #603813;
+  border: solid 1px #603813;
+}

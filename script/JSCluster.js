@@ -75,7 +75,7 @@ async function deleteDB() {
  * FUNCTIONS
  */
 
- // REGISTRATION
+ // REGISTRATION //
 
  /*
   * createUser() denne funktion står for at anskaffe og sammenligne data
@@ -111,7 +111,7 @@ async function createUser() {
   }
 };
 
-// LOGIN
+// LOGIN //
 
 /*
  * login()
@@ -181,7 +181,7 @@ function verifyUser(userName, password, dbUserName, dbPassword) {
   }
 };
 
-// DATABASE REQUESTS
+// DATABASE REQUESTS //
 
 /*
  * deleteUser()
@@ -279,7 +279,7 @@ async function fetchUserData(userName) {
   await getUser(userName);
 };
 
-// STORAGE MANAGEMENT
+// STORAGE MANAGEMENT //
 
 /*
  * storeUser()

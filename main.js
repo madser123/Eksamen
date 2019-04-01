@@ -1,29 +1,58 @@
-const electron = require('electron');
-const url = require('url');
-const path = require('path');
+// Modules
+const electron  = require('electron');
+const url       = require('url');
+const path      = require('path');
+const storage   = require('electron-json-storage');
 
-const {app, BrowserWindow} = electron;
+const {app, BrowserWindow, ipcMain} = electron;
 
-let mainWindow;
+// Windows
+let win;
+let login;
+let loader;
+
+let user;
+
+if(storage.get('user')) {
+  storage.get('user', function(error, object) {
+    if (error) throw error;
+    user = object;
+  });
+};
 
 // Listen for app to be ready
 app.on('ready', function(){
   // Create new window
-  mainWindow = new BrowserWindow({
-    //transparent: true,
-    //frame: false
+  loader = new BrowserWindow({
+    frame: false,
+    width: 400,
+    height: 500,
+    icon: 'img/logo4.png'
   });
+
   // Load html into window
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
-    protocol:'file:',
+  loader.loadURL(url.format({
+    //pathname: path.join(__dirname, '/commTest/TEST.html'),
+    pathname: path.join(__dirname, '/loader/loader.html'),
+    //pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
     slashes: true
   }));
 
-  // Build menu from template
-  //const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-  // Insert menu
-//  Menu.setApplicationMenu(mainMenu);
 });
 
-// Create menu template
+// Handle create mainWindow
+function createMainWindow() {
+  win = new BrowserWindow({
+    icon: 'img/logo4.png'
+  });
+
+  win.loadURL(url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
+};
+
+// Listeners
+exports.create = () => createMainWindow();
