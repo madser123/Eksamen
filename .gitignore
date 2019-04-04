@@ -12,6 +12,7 @@ start.bat
 # Testing environments
 /connTest
 /commTest
+/camTest
 
 # Unused pictures
 logo.png
