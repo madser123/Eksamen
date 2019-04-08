@@ -72,14 +72,6 @@ header {
   display: block;
 }
 
-.buttonMedium {
-  width: 40%;
-  margin: 10px 30%;
-  padding: 6px 0;
-  border-radius: 3px;
-  font-size: 18px;
-}
-
 img {
   border-radius: 110%;
   width:30%;
@@ -124,6 +116,8 @@ footer {
   color: #FFFFFF;
   font-size: 15px;
   cursor: pointer;
+  transition: .2s;
+  border: solid 1px #603813;s
 }
 
 .buttonMedium:hover {
