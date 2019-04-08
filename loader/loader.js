@@ -1,6 +1,7 @@
 const dns         = require('dns')
 const electron    = require('electron')
 const remote      = require('electron').remote
+const storage     = require('electron-json-storage')
 
 const mainProcess = require('electron').remote.require('./main.js')
 
@@ -9,6 +10,8 @@ var i = 0;
 var time;
 var result;
 var myVar;
+
+var user = storage.get
 
 var window;
 
@@ -82,11 +85,12 @@ async function onloadFunction() {
     if (result) {
       console.log("result defined");
       console.log("Connected (LOAD NEW WINDOW)");
-      mainProcess.create();
+
+      mainProcess.createMain();
 
       window = remote.getCurrentWindow;
-
       window.close();
+
     } else {
       timerSwitch(i)
       document.getElementById("timer").innerHTML = "<p id='loaderText'>Connection not available.<br> Retrying in: <span id='time'></span> seconds";
