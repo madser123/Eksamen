@@ -1,0 +1,38 @@
+.grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-template-areas:
+  "header header"
+  "friends main"
+  "chat chat"
+  "footer footer";
+}
+
+.header{
+  grid-area: header;
+}
+
+.friends{
+  grid-area: friends;
+}
+
+.main{
+  grid-area: main;
+}
+
+.chat{
+  grid-area: chat;
+}
+
+.footer{
+  grid-area: footer;
+}
+
+.grid div:nth-child(even) {
+  background-color: red;
+}
+
+.grid div:nth-child(odd) {
+  background-color: blue;
+}
