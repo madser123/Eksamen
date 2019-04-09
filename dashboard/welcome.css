@@ -1,10 +1,19 @@
+/* Her vælger vi teksten som der skal bruges på siden */
+*{
+ font-family: arial !important;
+}
+
+
 /* Et simpelt layout for css grid */
 .grid{
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-template-columns:25% 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
   grid-template-areas:
   "header header"
+  "search main"
+  "friends main"
+  "friends main"
   "friends main"
   "footer footer";
 }
@@ -12,24 +21,32 @@
 /* Her lister vi vores forskellige dele som skal være på siden */
 .header{
   grid-area: header;
+  padding-left: 10px;
+  background-color: #603813;
+}
+
+.search{
+  grid-area: search;
+  background-color: #807613;
+  text-align: center;
+  padding-top: 25px;
+
 }
 
 .friends{
   grid-area: friends;
+  background-color: #FF5F10
 }
 
 .main{
   grid-area: main;
+  background-color: #FF7F11;
+  padding: 5px 5px 5px 5px;
 }
 
 .footer{
   grid-area: footer;
-}
-
-.grid div:nth-child(even) {
-  background-color: red;
-}
-
-.grid div:nth-child(odd) {
-  background-color: blue;
+  text-align: center;
+  padding-top: 5px;
+  background-color: #603813;
 }
