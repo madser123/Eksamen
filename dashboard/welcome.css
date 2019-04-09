@@ -1,3 +1,4 @@
+/* Et simpelt layout for css grid */
 .grid{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -5,10 +6,10 @@
   grid-template-areas:
   "header header"
   "friends main"
-  "chat chat"
   "footer footer";
 }
 
+/* Her lister vi vores forskellige dele som skal være på siden */
 .header{
   grid-area: header;
 }
@@ -19,10 +20,6 @@
 
 .main{
   grid-area: main;
-}
-
-.chat{
-  grid-area: chat;
 }
 
 .footer{
