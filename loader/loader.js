@@ -16,6 +16,9 @@ var user = storage.get
 var window;
 
 function startTimer(duration, display) {
+  if (time > 65) {
+    stop();
+  }
   var timer = duration, seconds;
   myVar = setInterval(function () {
     seconds = parseInt(timer % 60, 10);
@@ -51,6 +54,7 @@ function timerSwitch(num) {
       time = 60;
       break;
     case 5:
+      time = 70;
       break;
   }
   i++;
@@ -86,7 +90,7 @@ async function onloadFunction() {
       console.log("result defined");
       console.log("Connected (LOAD NEW WINDOW)");
 
-      mainProcess.createMain();
+      mainProcess.checkAuto();
 
       window = remote.getCurrentWindow;
       window.close();
@@ -99,3 +103,15 @@ async function onloadFunction() {
     }
   }
 };
+
+function stop() {
+  document.getElementById("remover").innerHTML = "";
+  document.getElementById("timer").innerHTML   = "No connection available. <br> Connect to the internet and retry.<br> <button class='buttonMedium' id='retryButton'>Retry</button>";
+  document.getElementById("retryButton").addEventListener('click', retry);
+}
+
+function retry() {
+  i = 0;
+  document.getElementById("remover").innerHTML = "<div class='logoloader'><img src='Ellipsis-1s-164px.gif'></div>";
+  onloadFunction();
+}

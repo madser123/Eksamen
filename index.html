@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <meta charset="utf-8">
     <link rel="stylesheet" href="css/main.css">
+    <script src="index.js"></script>
     <script src="script/JSCluster.js"></script>
     <title>Sign In</title>
   </head>
-  <body>
+  <body onload="document.getElementById('loginButton').addEventListener('click', login);">
     <section id="content">
       <img src="img/logo4.png" alt="logo">
       <div class="form">
@@ -21,7 +21,7 @@
         </form>
         <div id="formWarning">
         </div>
-        <a><button onclick="login()" class="buttonMedium">Login</button></a>
+        <button id="loginButton" class="buttonMedium">Login</button>
         <br>
         <a href="register.html"><button class="buttonMedium">Sign up</button></a>
       </div>

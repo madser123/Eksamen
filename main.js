@@ -11,23 +11,23 @@ let win;
 let login;
 let loader;
 
-let user;
+var user;
 
-if(storage.get('user')) {
-  storage.get('user', function(error, object) {
-    if (error) throw error;
-    user = object;
-  });
-};
+storage.get('user', function(error, object) {
+  if (error) throw error;
+  user = object;
+});
 
 // Listen for app to be ready
 app.on('ready', function(){
+
+  checkAutoLogin();
   // Create new window
   loader = new BrowserWindow({
-    frame: false,
-    width: 400,
+    frame : false,
+    width : 400,
     height: 500,
-    icon: 'img/logo4.png'
+    icon  : 'img/logo4.png'
   });
 
   // Load html into window
@@ -36,7 +36,7 @@ app.on('ready', function(){
     pathname: path.join(__dirname, '/loader/loader.html'),
     //pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
-    slashes: true
+    slashes : true
   }));
 
 });
@@ -48,11 +48,48 @@ function createMainWindow() {
   });
 
   win.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
+    pathname: path.join(__dirname, './dashboard/welcome.html'),
     protocol: 'file:',
-    slashes: true
+    slashes : true
   }));
 };
 
-// Listeners
-exports.create = () => createMainWindow();
+// Handle create loginWindow
+function createLoginWindow() {
+  login = new BrowserWindow({
+    icon: 'img/logo4.png'
+  })
+
+  login.loadURL(url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes : true
+  }))
+}
+
+function checkAutoLogin() {
+  if(user) {
+    if(user.hasOwnProperty('autoLogin') === true) {
+      console.log("AUTOLOGIN: TRUE");
+      console.log(user);
+      createMainWindow();
+    } else {
+      console.log("AUTOLOGIN: FALSE");
+      console.log(user);
+      createLoginWindow();
+    }
+  }
+}
+
+
+function test() {
+  win = new BrowserWindow;
+
+  win.loadURL(url.format({
+    pathname: path.join(__dirname, 'camTest/test.html')
+  }))
+}
+
+// Exports
+exports.createMain = () => createMainWindow();
+exports.checkAuto  = () => checkAutoLogin();

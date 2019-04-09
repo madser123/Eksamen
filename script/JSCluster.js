@@ -1,15 +1,31 @@
 /*
  * GLOBAL VARIABLES
  */
-const storage = require("electron-json-storage");
-const mysql   = require("mysql");
+
+const storage  = require("electron-json-storage");
+const mysql    = require("mysql");
+const electron = require("electron");
+const remote   = require("electron").remote;
+
+const mainProcess = require("electron").remote.require("./main.js");
 
 const defaultDataPath = storage.getDefaultDataPath();
 
 var numRows;
 var result;
-var user;
 
+var window;
+
+storage.get('user', function(error, object) {
+  if (error) throw error;
+  if (object.hasOwnProperty('autoLogin')) {
+    console.log("User defined");
+    user = object;
+    console.log(object);
+  } else {
+    console.log("User not defined");
+  }
+});
 
 /*
  * CONNECTION SETUP
@@ -19,7 +35,7 @@ var connection = mysql.createConnection({
   host      :"localhost",
   user      :"root",
   password  :"",
-  database  :"db",
+  database  :"db"
 });
 
 function conn(sql) {
@@ -111,76 +127,6 @@ async function createUser() {
   }
 };
 
-// LOGIN //
-
-/*
- * login()
- */
-
-async function login() {
-
-  var userName = document.getElementsByName("userName");
-  var password = document.getElementsByName("password");
-
-  if(validateForm('login')) {
-    var sql     = "SELECT * FROM db.users WHERE ?? = ?";
-    var inserts = ["userName", userName];
-    sql         = mysql.format(sql, inserts);
-
-    connResult = await conn(sql);
-
-    var dbUsername;
-    var dbPassword;
-    var autologin;
-
-    if(connResult === 'resolved') {
-      dbUserName = result[0]["userName"];
-      dbPassword = result[0]["password"];
-    } else {
-      console.log(connResult);
-    }
-
-    if(document.getElementsByName("autoLogin").checked) {
-      autoLogin = true;
-    } else {
-      autoLogin = false;
-    }
-
-    if(verifyUser(userName, password, dbUserName, dbPassword)) {
-      storeUser(connResult, autoLogin);
-      if(await fetchUserData(userName)) {
-        redirect('../dashboard/welcome.html');
-      }
-    }
-  }
-};
-
-/*
- * verifyUser()
- */
-
-function verifyUser(userName, password, dbUserName, dbPassword) {
-
-  if(compare(dbUserName, userName)){
-    console.log("UserName exists");
-
-    if(compare(dbPassword, password)) {
-      console.log("password exists");
-      return true;
-
-    } else {
-      console.log("Wrong password");
-      document.getElementById("formWarning").innerHTML
-      return false;
-
-    }
-  } else {
-    console.log("userName doesn't exist");
-    return false;
-
-  }
-};
-
 // DATABASE REQUESTS //
 
 /*
@@ -188,7 +134,6 @@ function verifyUser(userName, password, dbUserName, dbPassword) {
  */
 
 async function deleteUser(userID) {
-
   var sql     = "DELETE FROM db.users WHERE ?? = ?";
   var inserts = ["ID", userID];
   sql         = mysql.format(sql, inserts);
@@ -329,6 +274,17 @@ function getUser(userName) {
 };
 
 /*
+ * removeUser()
+ */
+
+function removeUser(userName) {
+  storage.remove(userName, function(error) {
+    if (error) throw error;
+  user = "";
+  });
+}
+
+/*
  * validateForm() tjekker om alle felter i en html <form> er udfyldt.
  *
  * form = formens navn i html
@@ -341,7 +297,16 @@ function getUser(userName) {
  */
 
 function validateForm(form) {
-  var fields = ["email", "firstName", "lastName", "userName", "password"];
+  switch(form) {
+    case "login":
+      var fields = ["userName", "password"];
+      break;
+
+    case "register":
+      var fields = ["email", "firstName", "lastName", "userName", "password"];
+      break;
+  }
+
   var i, l   = fields.length;
 
   var fieldname;
