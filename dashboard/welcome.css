@@ -1,6 +1,7 @@
 /* Her vælger vi teksten som der skal bruges på siden */
 *{
  font-family: arial !important;
+ 
 }
 
 
@@ -22,12 +23,12 @@
 .header{
   grid-area: header;
   padding-left: 10px;
-  background-color: #603813;
+  background-color: #FF7F11;
 }
 
 .search{
   grid-area: search;
-  background-color: #807613;
+  background-color: #FF9F01;
   text-align: center;
   padding-top: 25px;
 
@@ -35,12 +36,12 @@
 
 .friends{
   grid-area: friends;
-  background-color: #FF5F10
+  background-color: #FF9F01;
 }
 
 .main{
   grid-area: main;
-  background-color: #FF7F11;
+  background-color: #ffffff;
   padding: 5px 5px 5px 5px;
 }
 
@@ -48,5 +49,5 @@
   grid-area: footer;
   text-align: center;
   padding-top: 5px;
-  background-color: #603813;
+  background-color: #FF7F11;
 }
