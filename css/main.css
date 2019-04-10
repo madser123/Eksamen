@@ -117,7 +117,13 @@ footer {
   font-size: 15px;
   cursor: pointer;
   transition: .2s;
-  border: solid 1px #603813;s
+  border: solid 1px #603813;
+  position: relative;
+  margin-left: 40%;
+  margin-right: auto;
+  text-align: center;
+  width: 20%;
+
 }
 
 .buttonMedium:hover {
@@ -148,16 +154,16 @@ footer {
   font-weight: bold;
 }
 
-/* FORMS
+/* FORMS */
 .form {
-  width: 500px;
+  width: 100%;
   clear: both;
   display: inline-inline-block;
 }
 
 .input {
   height: 25px;
-  width: 100px;
+  width: 35%;
   font-size: 15px;
   border-radius: 5px;
   border: solid;
