@@ -263,7 +263,7 @@ function storeUser(connResult, autoLogin) {
         if (error) throw error;
       });
     } else {
-      storage.set(result[0]["userName"], {
+      storage.set('user', {
         id       : result[0]["ID"],
         firstName: result[0]["firstName"],
         lastName : result[0]["lastName"],
