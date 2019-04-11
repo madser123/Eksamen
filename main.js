@@ -21,7 +21,7 @@ storage.get('user', function(error, object) {
 });
 
 // Listen for app to be ready
-app.on('ready', function(){
+app.on('ready', function() {
   //test();
   checkAutoLogin();
   // Create new window
@@ -71,7 +71,7 @@ function createLoginWindow() {
 
 function checkAutoLogin() {
   if(user) {
-    if(user.hasOwnProperty('autoLogin') === true) {
+    if(user.autoLogin === true) {
       console.log("AUTOLOGIN: TRUE");
       console.log(user);
       createMainWindow();
@@ -93,5 +93,6 @@ function test() {
 }
 
 // Exports
-exports.createMain = () => createMainWindow();
-exports.checkAuto  = () => checkAutoLogin();
+exports.createMain  = () => createMainWindow();
+exports.createLogin = () => createLoginWindow();
+exports.checkAuto   = () => checkAutoLogin();

@@ -17,10 +17,10 @@ body {
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
   grid-template-areas:
   "header header header header"
-  "search main main group"
-  "friends main main group"
-  "friends main main group"
-  "friends main main group"
+  "search main main main"
+  "friends main main main"
+  "friends main main main"
+  "friends main main main"
   "footer footer footer footer";
 }
 
@@ -45,11 +45,6 @@ body {
   grid-area: friends;
   background-color: #BF600D;
   padding-left: 10px;
-}
-
-.group{
-  grid-area: group;
-  background-color: #BF600D;
 }
 
 .main{
