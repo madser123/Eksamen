@@ -105,5 +105,10 @@ button{
   margin-left: 5px;
   margin-right: auto;
   text-align: center;
-  width: 30%;
+  width: 80px;
+}
+
+.logout{
+  margin-top: 295px;
+  margin-left: 95px;
 }
