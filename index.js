@@ -1,6 +1,8 @@
- /*
-  * login()
-  */
+// Login //
+
+/*
+ * login()
+ */
 
 async function login() {
 
@@ -45,9 +47,9 @@ async function login() {
   }
 };
 
- /*
-  * verifyUser()
-  */
+/*
+ * verifyUser()
+ */
 
  function verifyUser(userName, password, dbUserName, dbPassword) {
 

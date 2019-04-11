@@ -1,3 +1,5 @@
+'use strict';
+
 // Modules
 const electron  = require('electron');
 const url       = require('url');
@@ -20,7 +22,7 @@ storage.get('user', function(error, object) {
 
 // Listen for app to be ready
 app.on('ready', function(){
-
+  //test();
   checkAutoLogin();
   // Create new window
   loader = new BrowserWindow({

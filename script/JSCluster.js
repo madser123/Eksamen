@@ -62,7 +62,8 @@ function conn(sql) {
    await createDB();
    await createUserTable();
    await createInterestsTable();
-   await createJunctionTable();
+   await createInterestJunctionTable();
+   await createFriendsJunctionTable();
    return true;
  };
 
@@ -78,8 +79,12 @@ async function createInterestsTable() {
   await conn("CREATE TABLE interests (ID int UNSIGNED AUTO_INCREMENT primary key, name VARCHAR(99))");
 };
 
-async function createJunctionTable() {
-  await conn("CREATE TABLE junction (ID int AUTO_INCREMENT primary key,interestID INT UNSIGNED, userID INT UNSIGNED,FOREIGN KEY (interestID) REFERENCES interests(ID),FOREIGN KEY (userID) REFERENCES users(ID))");
+async function createInterestJunctionTable() {
+  await conn("CREATE TABLE interestJunction (ID int AUTO_INCREMENT primary key, interestID INT UNSIGNED, userID INT UNSIGNED, FOREIGN KEY (interestID) REFERENCES interests(ID), FOREIGN KEY (userID) REFERENCES users(ID))");
+};
+
+async function createFriendsJunctionTable()  {
+  await conn("CREATE TABLE friendshipJunction (ID int AUTO_INCREMENT primary key, user1ID INT UNSIGNED, user2ID INT UNSIGNED, FOREIGN KEY (user1ID) REFERENCES users(ID), FOREIGN KEY (user2ID) REFERENCES users(ID))")
 };
 
 async function deleteDB() {
@@ -90,42 +95,6 @@ async function deleteDB() {
 /*
  * FUNCTIONS
  */
-
- // REGISTRATION //
-
- /*
-  * createUser() denne funktion står for at anskaffe og sammenligne data
-  * så at der ikke bliver oprettet 2 identiske brugere.
-  *
-  */
-
-async function createUser() {
-  document.getElementById("formWarning").innerHTML = "";
-
-  if(validateForm("register")) {
-    var firstName = document.getElementsByName("firstName")[0].value;
-    var lastName  = document.getElementsByName("lastName")[0].value;
-    var email     = document.getElementsByName("email")[0].value;
-    var userName  = document.getElementsByName("userName")[0].value;
-    var password  = document.getElementsByName("password")[0].value;
-    let filter    = 1;
-    let role      = 0;
-
-    firstName = ucFirst(firstName);
-    lastName  = ucFirst(lastName);
-
-    if(await doesUserExist(userName, email)) {
-      console.log("User already exist.");
-      document.getElementById("formWarning").innerHTML = "* User already exist";
-    } else {
-      console.log("Registration complete");
-      conn("INSERT INTO users (`firstName`,`lastname`,`email`,`userName`,`password`,`filter`,`role`) VALUES ('"+firstName+"','"+lastName+"','"+email+"','"+userName+"','"+password+"','"+filter+"','"+role+"')");
-      redirect('../index.html');
-    }
-  } else {
-    console.log("Form field empty");
-  }
-};
 
 // DATABASE REQUESTS //
 
@@ -350,7 +319,7 @@ function compare(a, b) {
  *
  * Eksempel:
  *
- * ucFirst("hello world") => "Hello world"
+ * ucFirst("hello world") = "Hello world"
  *
  */
 
