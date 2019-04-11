@@ -23,6 +23,8 @@ async function login() {
      if(result.length > 0) {
        dbUserName = result[0]["userName"];
        dbPassword = result[0]["password"];
+       console.log(dbUserName);
+       console.log(dbPassword);
      } else {
        console.log(connResult);
      }
@@ -34,17 +36,19 @@ async function login() {
      }
 
      if(verifyUser(userName, password, dbUserName, dbPassword)) {
-       storeUser(connResult, autoLogin);
-
-       mainProcess.createMain();
-
-       window = remote.getCurrentWindow;
-
-       window.close();
+       await storeUser(connResult, autoLogin);
+       document.getElementById("gif").innerHTML = "<img src='img/Ellipsis-1s-164px.gif'>"
+       setTimeout(redirectWelcome, 3000);
     }
   }
 };
 
+function redirectWelcome() {
+  remote.BrowserWindow.getFocusedWindow().minimize();
+  setTimeout(mainProcess.createMain(), 100);
+
+  window.close();
+}
 /*
  * verifyUser()
  */

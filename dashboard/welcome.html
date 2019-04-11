@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="welcome.css">
     <title>Thermite</title>
   </head>
-  <body onload="setTimeout(pasteFriends, 200);">
+  <body onload="setTimeout(onload, 200);">
     <section id="content">
     <div class="grid">
       <div class="header">
@@ -26,7 +26,6 @@
       </div>
 
       <div class="search">
-        
         <input class="input" type="search" name="search" placeholder="Search users"><button id="searchButton" class="buttonMedium" onclick="searchUsers();">Search</button><br>
         <div id="searchlist">
         </div>
@@ -35,6 +34,9 @@
 
       <div class="main">
         <div id="user">
+        </div>
+        <div id="interests">
+          <span>Interests</span>
         </div>
 
       </div>

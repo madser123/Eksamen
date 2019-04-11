@@ -199,32 +199,36 @@ async function fetchUserData(id) {
 // FRIENDS MANAGEMENT //
 
 async function addFriend(id) {
-  var sql     = "SELECT * FROM db.friendshipjunction WHERE ?? = ? AND ?? = ?";
-  var inserts = ["user1ID", user.id, "user2ID", id];
-  sql         = mysql.format(sql, inserts);
-
-  connResult = await conn(sql);
-
-  if (connResult === 'resolved')  {
-    if (result.length > 0) {
-      console.log(result[0].ID);
-      console.log("already friends");
-    } else {
-      console.log("no data");
-      var sql     = "INSERT INTO db.friendshipjunction (??, ??) VALUES (?, ?)";
-      var inserts = ["user1ID", "user2ID", user.id, id];
-      sql         = mysql.format(sql, inserts);
-
-      connResult = await conn(sql);
-
-      console.log(connResult);
-
-      pasteFriends();
-
-      return connResult;
-    }
+  if (compare(user.id, id)) {
+    console.log("You can't add yourself")
   } else {
-    console.log("not resolved");
+    var sql     = "SELECT * FROM db.friendshipjunction WHERE ?? = ? AND ?? = ?";
+    var inserts = ["user1ID", user.id, "user2ID", id];
+    sql         = mysql.format(sql, inserts);
+
+    connResult = await conn(sql);
+
+    if (connResult === 'resolved')  {
+      if (result.length > 0) {
+        console.log(result[0].ID);
+        console.log("already friends");
+      } else {
+        console.log("no data");
+        var sql     = "INSERT INTO db.friendshipjunction (??, ??) VALUES (?, ?)";
+        var inserts = ["user1ID", "user2ID", user.id, id];
+        sql         = mysql.format(sql, inserts);
+
+        connResult = await conn(sql);
+
+        console.log(connResult);
+
+        pasteFriends();
+
+        return connResult;
+      }
+    } else {
+      console.log("not resolved");
+    }
   }
 };
 
@@ -246,11 +250,13 @@ async function removeFriend(id) {
 
 // STORAGE MANAGEMENT //
 
-function storeUser(connResult, autoLogin) {
+async function storeUser(connResult, autoLogin) {
   if(connResult === 'resolved') {
+    console.log(connResult);
+    console.log(result);
     if(autoLogin === true) {
       console.log('autoLogin: True')
-      storage.set('user', {
+      await storage.set('user', {
         id       : result[0]["ID"],
         firstName: result[0]["firstName"],
         lastName : result[0]["lastName"],
@@ -261,9 +267,10 @@ function storeUser(connResult, autoLogin) {
         autoLogin: autoLogin
       }, function(error) {
         if (error) throw error;
+        console.log(result);
       });
     } else {
-      storage.set('user', {
+      await storage.set('user', {
         id       : result[0]["ID"],
         firstName: result[0]["firstName"],
         lastName : result[0]["lastName"],
@@ -276,12 +283,16 @@ function storeUser(connResult, autoLogin) {
         if (error) throw error;
       });
     }
+    storage.get('user', function(error, object) {
+      if (error) throw error;
+      user = object;
+    });
   }
 };
 
 
-function editAutologin(autoLogin) {
-  storage.set('user', {
+async function editAutologin(autoLogin) {
+  await storage.set('user', {
     id       : user.id,
     firstName: user.firstname,
     lastName : user.lastname,

@@ -9,9 +9,13 @@ function pasteUserInfo() {
   if (user.hasOwnProperty("autoLogin")) {
     userElement = document.getElementById("user");
 
-    userElement.innerHTML = "Welcome back, " + user.firstname + " " + user.lastName;
+    userElement.innerHTML = "Welcome back, " + user.firstName + " " + user.lastName;
   }
 };
+
+async function pasteInterests() {
+  
+}
 
 async function pasteFriends() {
   console.log("pasteFriends")
