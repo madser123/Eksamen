@@ -1,47 +1,69 @@
 /* Her vælger vi teksten som der skal bruges på siden */
 *{
  font-family: arial !important;
- 
+
 }
 
+body {
+  margin: 0;
+  background-color: #FF7F11;
+}
+
+#content {
+  margin: 0 10%;
+  width: 80%;
+  background-color: #FF7F11;
+  padding: 60px 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
 
 /* Et simpelt layout for css grid */
 .grid{
   display: grid;
-  grid-template-columns:25% 1fr;
+  grid-template-columns:25% 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
   grid-template-areas:
-  "header header"
-  "search main"
-  "friends main"
-  "friends main"
-  "friends main"
-  "footer footer";
+  "header header header header"
+  "search main main group"
+  "friends main main group"
+  "friends main main group"
+  "friends main main group"
+  "footer footer footer footer";
 }
 
 /* Her lister vi vores forskellige dele som skal være på siden */
 .header{
   grid-area: header;
   padding-left: 10px;
-  background-color: #FF7F11;
+  background-color: #804009;
+  padding-top:10px;
+  padding-bottom: 10px;
 }
 
 .search{
   grid-area: search;
-  background-color: #FF9F01;
+  background-color: #BF600D;
   text-align: center;
-  padding-top: 25px;
+  padding-top: 15px;
 
 }
 
 .friends{
   grid-area: friends;
-  background-color: #FF9F01;
+  background-color: #BF600D;
+  padding-left: 10px;
+}
+
+.group{
+  grid-area: group;
+  background-color: #BF600D;
 }
 
 .main{
   grid-area: main;
-  background-color: #ffffff;
+  background-color: #FF8112;
   padding: 5px 5px 5px 5px;
 }
 
@@ -49,5 +71,21 @@
   grid-area: footer;
   text-align: center;
   padding-top: 5px;
-  background-color: #FF7F11;
+  background-color: #804009;
+}
+
+img {
+  border-radius: 100%;
+  width:100px;
+  height:auto;
+  position: relative;
+  display: block;
+  background-color:#ffffff;
+  float: left;
+}
+
+h1{
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
