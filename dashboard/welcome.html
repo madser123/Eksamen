@@ -8,26 +8,29 @@
     <link rel="stylesheet" href="../css/main.css">
     <title>Thermite</title>
   </head>
-  <body>
+  <body onload="onload()">
     <section id="content">
-
     <div class="grid">
       <div class="header">
         <h1> Termite </h1>
        </div>
 
-      <div class="friends"> friends </div>
-      <div class="search">
-        <input class="input" type="search" name="search" placeholder="Søg"><br>
+      <div class="friends">
+        <span>friends</span>
+        <div id="friendslist">
+
+        </div>
       </div>
+
+      <div class="search">
+        <input class="input" type="search" name="search" placeholder="Search friends"><br>
+
+      </div>
+
       <div class="main">
-        <h2> Fylde tekst </h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum condimentum felis ut ligula molestie mattis. Maecenas sit amet est ipsum. Phasellus arcu nunc, mollis in rhoncus in, fringilla sed risus. Proin pellentesque quam ut enim consequat malesuada. Nulla rhoncus elementum lectus, ac hendrerit enim elementum id. Pellentesque sodales lorem a turpis suscipit, vel commodo tortor laoreet. Morbi dapibus condimentum finibus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras blandit urna eget nibh pharetra rhoncus. Sed placerat leo ut mauris elementum, ac facilisis massa pellentesque.
-        </p>
-        <p>
-Quisque pulvinar massa quis lectus vehicula, at pellentesque lorem ornare. Fusce congue nunc non purus bibendum gravida. Pellentesque vel ex arcu. Cras a sodales tortor. Phasellus ligula elit, maximus eu lectus quis, cursus cursus augue. Nunc pretium dapibus bibendum. Cras molestie gravida est vel mollis. Maecenas tortor arcu, volutpat et gravida ac, egestas eget ipsum. Morbi vel fringilla metus.
-        </p>
+        <div id="user">
+        </div>
+
       </div>
 
       <div class="footer">
