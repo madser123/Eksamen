@@ -13,6 +13,7 @@ const defaultDataPath = storage.getDefaultDataPath();
 
 var numRows;
 var result;
+var friends;
 
 var window;
 
@@ -80,11 +81,11 @@ async function createInterestsTable() {
 };
 
 async function createInterestJunctionTable() {
-  await conn("CREATE TABLE interestJunction (ID int AUTO_INCREMENT primary key, interestID INT UNSIGNED, userID INT UNSIGNED, FOREIGN KEY (interestID) REFERENCES interests(ID), FOREIGN KEY (userID) REFERENCES users(ID))");
+  await conn("CREATE TABLE interestjunction (ID int AUTO_INCREMENT primary key, interestID INT UNSIGNED, userID INT UNSIGNED, FOREIGN KEY (interestID) REFERENCES interests(ID), FOREIGN KEY (userID) REFERENCES users(ID))");
 };
 
 async function createFriendsJunctionTable()  {
-  await conn("CREATE TABLE friendshipJunction (ID int AUTO_INCREMENT primary key, user1ID INT UNSIGNED, user2ID INT UNSIGNED, FOREIGN KEY (user1ID) REFERENCES users(ID), FOREIGN KEY (user2ID) REFERENCES users(ID))")
+  await conn("CREATE TABLE friendshipjunction (ID int AUTO_INCREMENT primary key, user1ID INT UNSIGNED, user2ID INT UNSIGNED, FOREIGN KEY (user1ID) REFERENCES users(ID), FOREIGN KEY (user2ID) REFERENCES users(ID))")
 };
 
 async function deleteDB() {
@@ -97,10 +98,6 @@ async function deleteDB() {
  */
 
 // DATABASE REQUESTS //
-
-/*
- * deleteUser()
- */
 
 async function deleteUser(userID) {
   var sql     = "DELETE FROM db.users WHERE ?? = ?";
@@ -117,41 +114,47 @@ async function deleteUser(userID) {
 };
 
 
-/*
- * addInterest()
- */
-
 async function addInterest(interestID, userID) {
-  var sql     = "INSERT INTO db.junction (`interestID`, `userID`) VALUES (??, ?)";
+  var sql     = "INSERT INTO db.interestjunction (`interestID`, `userID`) VALUES (??, ?)";
   var inserts = [interestID, userID];
   sql         = mysql.format(sql, inserts);
 
-  await conn(sql);
+  connResult = await conn(sql);
 
-  console.log('Interest added');
+  console.log(connResult);
+
+  return connResult;
 };
 
 
-/*
- * removeInterest()
- */
-
 async function removeInterest(interestID, userID) {
-  var sql     = "DELETE FROM db.junction WHERE ?? = ?? ?? = ?";
+  var sql     = "DELETE FROM db.interestjunction WHERE ?? = ?? ?? = ?";
   var inserts = ["interestID", interestID, "userID", userID];
   sql         = mysql.format(sql, inserts);
 
-  await conn(sql);
+  connResult = await conn(sql);
 
-  console.log("interest removed");
+  console.log(connResult);
+
+  return connResult;
 };
 
 
-/*
- * doesUserExist() checker om et brugernavn og en email allerede kan findes i databasen.
- *
- * Funktionen bliver somregelt brugt i sammenhæng med createUser().
- */
+async function fetchFriends() {
+  var sql     = "SELECT * FROM db.friendshipjunction WHERE ?? = ?";
+  var inserts = ["user1ID", user.id];
+  sql         = mysql.format(sql, inserts);
+
+  connResult = await conn(sql);
+  friends = result;
+
+  console.log(connResult);
+
+  //for(var i = 0; i < friends.length; )
+
+  return connResult;
+};
+
 
 async function doesUserExist(user, email) {
   var sql     = "SELECT * FROM db.users WHERE ?? = ?";
@@ -163,7 +166,7 @@ async function doesUserExist(user, email) {
   var dbUserName;
   var dbEmail;
 
- if(typeof result != "undefined" && result != null && result.length != null && result.length > 0){
+  if(typeof result != "undefined" && result != null && result.length != null && result.length > 0){
     dbUserName = result[0]["userName"];
     dbEmail    = result[0]["email"];
   }
@@ -179,27 +182,71 @@ async function doesUserExist(user, email) {
   }
 };
 
-/*
- * fetchUserData()
- */
 
-async function fetchUserData(userName) {
-  var sql = "SELECT * FROM db.users WHERE ?? = ?";
-  var inserts = ["userName", userName];
-  sql = mysql.format(sql, inserts);
+async function fetchUserData(id) {
+  var sql     = "SELECT * FROM db.users WHERE ?? = ?";
+  var inserts = ["ID", id];
+  sql         = mysql.format(sql, inserts);
 
   connResult = await conn(sql);
 
-  await getUser(userName);
+  console.log(connResult);
+
+  return connResult;
 };
+
+
+// FRIENDS MANAGEMENT //
+
+async function addFriend(id) {
+  var sql     = "SELECT * FROM db.friendshipjunction WHERE ?? = ? AND ?? = ?";
+  var inserts = ["user1ID", user.id, "user2ID", id];
+  sql         = mysql.format(sql, inserts);
+
+  connResult = await conn(sql);
+
+  if (connResult === 'resolved')  {
+    if (result.length > 0) {
+      console.log(result[0].ID);
+      console.log("already friends");
+    } else {
+      console.log("no data");
+      var sql     = "INSERT INTO db.friendshipjunction (??, ??) VALUES (?, ?)";
+      var inserts = ["user1ID", "user2ID", user.id, id];
+      sql         = mysql.format(sql, inserts);
+
+      connResult = await conn(sql);
+
+      console.log(connResult);
+
+      pasteFriends();
+
+      return connResult;
+    }
+  } else {
+    console.log("not resolved");
+  }
+};
+
+
+async function removeFriend(id) {
+  var sql     = "DELETE FROM db.friendshipjunction WHERE ?? = ? AND ?? = ?";
+  var inserts = ["user1ID", user.id, "user2ID", id];
+  sql         = mysql.format(sql, inserts);
+
+  connResult = await conn(sql);
+
+  console.log(connResult);
+
+  pasteFriends();
+
+  return connResult;
+};
+
 
 // STORAGE MANAGEMENT //
 
-/*
- * storeUser()
- */
-
-function storeUser(connResult, autologin) {
+function storeUser(connResult, autoLogin) {
   if(connResult === 'resolved') {
     if(autoLogin === true) {
       console.log('autoLogin: True')
@@ -211,7 +258,7 @@ function storeUser(connResult, autologin) {
         userName : result[0]["userName"],
         filter   : result[0]["filter"],
         role     : result[0]["role"],
-        autoLogin: autologin
+        autoLogin: autoLogin
       }, function(error) {
         if (error) throw error;
       });
@@ -223,7 +270,8 @@ function storeUser(connResult, autologin) {
         email    : result[0]["email"],
         userName : result[0]["userName"],
         filter   : result[0]["filter"],
-        role     : result[0]["role"]
+        role     : result[0]["role"],
+        autoLogin: autoLogin
       }, function(error) {
         if (error) throw error;
       });
@@ -231,39 +279,35 @@ function storeUser(connResult, autologin) {
   }
 };
 
-/*
- * getUser()
- */
 
-function getUser(userName) {
-  storage.get(userName, function(error, object) {
+function editAutologin(autoLogin) {
+  storage.set('user', {
+    id       : user.id,
+    firstName: user.firstname,
+    lastName : user.lastname,
+    email    : user.email,
+    userName : user.userName,
+    filter   : user.filter,
+    role     : user.role,
+    autoLogin: autoLogin
+  }), function(error) {
+    if(error) throw error;
+  };
+
+  storage.get('user', function(error, object) {
     if (error) throw error;
     user = object;
   });
 };
 
-/*
- * removeUser()
- */
 
 function removeUser(userName) {
   storage.remove(userName, function(error) {
     if (error) throw error;
   user = "";
   });
-}
+};
 
-/*
- * validateForm() tjekker om alle felter i en html <form> er udfyldt.
- *
- * form = formens navn i html
- *
- * HTML:
- * <form name='foo'>
- *
- * JS:
- * validateForm('foo');
- */
 
 function validateForm(form) {
   switch(form) {
@@ -294,16 +338,6 @@ function validateForm(form) {
 };
 
 
-/*
- * compare() sammenligner to values.
- *
- * Eksempel:
- *
- * compare(1, 2) = FALSE
- *
- * compare('hej', 'hej') = TRUE
- */
-
 function compare(a, b) {
   if(a === b) {
     return true;
@@ -313,16 +347,6 @@ function compare(a, b) {
 };
 
 
-
-/*
- * ucFirst() gør så det første tegn i en string bliver til et uppercase.
- *
- * Eksempel:
- *
- * ucFirst("hello world") = "Hello world"
- *
- */
-
  function ucFirst(string) {
      return string.charAt(0).toUpperCase() + string.slice(1);
- }
+ };

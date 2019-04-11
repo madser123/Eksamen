@@ -20,7 +20,7 @@ async function login() {
      var dbPassword;
      var autologin;
 
-     if(connResult === 'resolved') {
+     if(result.length > 0) {
        dbUserName = result[0]["userName"];
        dbPassword = result[0]["password"];
      } else {
@@ -35,8 +35,6 @@ async function login() {
 
      if(verifyUser(userName, password, dbUserName, dbPassword)) {
        storeUser(connResult, autoLogin);
-
-       await fetchUserData(userName);
 
        mainProcess.createMain();
 
@@ -62,12 +60,13 @@ async function login() {
 
      } else {
        console.log("Wrong password");
-       document.getElementById("formWarning").innerHTML
+       document.getElementById("formWarning").innerHTML = "Wrong username or password."
        return false;
 
      }
    } else {
      console.log("userName doesn't exist");
+     document.getElementById("formWarning").innerHTML = "Wrong username or password."
      return false;
 
    }

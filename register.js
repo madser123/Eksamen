@@ -26,7 +26,12 @@ async function createUser() {
    } else {
      console.log("Registration complete");
      conn("INSERT INTO users (`firstName`,`lastname`,`email`,`userName`,`password`,`filter`,`role`) VALUES ('"+firstName+"','"+lastName+"','"+email+"','"+userName+"','"+password+"','"+filter+"','"+role+"')");
-     redirect('../index.html');
+
+     mainProcess.createLogin();
+
+     window = remote.getCurrentWindow;
+
+     window.close();
    }
  } else {
    console.log("Form field empty");
