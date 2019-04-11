@@ -16,4 +16,12 @@ start.bat
 
 # Unused pictures
 logo.png
-logo2.png
+Ellipsis-1s-200px.svg
+termite_logo.png
+
+# Word files
+*.docx
+*.tmp
+
+# Node_Modules
+node_modules
