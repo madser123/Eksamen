@@ -65,6 +65,7 @@ function conn(sql) {
    await createInterestsTable();
    await createInterestJunctionTable();
    await createFriendsJunctionTable();
+   await createInterests();
    return true;
  };
 
@@ -87,6 +88,18 @@ async function createInterestJunctionTable() {
 async function createFriendsJunctionTable()  {
   await conn("CREATE TABLE friendshipjunction (ID int AUTO_INCREMENT primary key, user1ID INT UNSIGNED, user2ID INT UNSIGNED, FOREIGN KEY (user1ID) REFERENCES users(ID), FOREIGN KEY (user2ID) REFERENCES users(ID))")
 };
+
+async function createInterests() {
+  var data = ["Gaming", "Movies", "Sports"];
+
+  for(var i = 0; i < data.length; i++) {
+    var sql     = "INSERT INTO db.interests (??) VALUES (?)";
+    var inserts = ["name", data[i]];
+    sql = mysql.format(sql, inserts);
+    await conn(sql);
+    console.log("Interest '" + data[i] + "' created");
+  }
+}
 
 async function deleteDB() {
   await conn("DROP DATABASE db");
@@ -115,20 +128,40 @@ async function deleteUser(userID) {
 
 
 async function addInterest(interestID, userID) {
-  var sql     = "INSERT INTO db.interestjunction (`interestID`, `userID`) VALUES (??, ?)";
-  var inserts = [interestID, userID];
+  var sql     = "INSERT INTO db.interestjunction (??, ??) VALUES (?, ?)";
+  var inserts = ["interestID", "userID", interestID, userID];
   sql         = mysql.format(sql, inserts);
 
-  connResult = await conn(sql);
+  await fetchUserInterests();
 
-  console.log(connResult);
+  var a = 0;
 
-  return connResult;
+  for (var i = 0; i < result.length; i++) {
+    if(result[0]) {
+      interest = result[0].interestID;
+      if(compare(interestID, interest)) {
+        a++;
+        console.log("A: " + a);
+      }
+    }
+  }
+
+  if(a === 0) {
+    await conn(sql);
+    await pasteInterests();
+    console.log("Added new interest");
+    return connResult;
+
+  } else {
+    console.log("Interest already added");
+    return false;
+
+  }
 };
 
 
 async function removeInterest(interestID, userID) {
-  var sql     = "DELETE FROM db.interestjunction WHERE ?? = ?? ?? = ?";
+  var sql     = "DELETE FROM db.interestjunction WHERE ?? = ? AND ?? = ?";
   var inserts = ["interestID", interestID, "userID", userID];
   sql         = mysql.format(sql, inserts);
 
@@ -136,8 +169,38 @@ async function removeInterest(interestID, userID) {
 
   console.log(connResult);
 
+  pasteInterests();
+
   return connResult;
 };
+
+async function fetchUserInterests() {
+  var sql     = "SELECT * FROM db.interestjunction WHERE ?? = ?";
+  var inserts = ["userID", user.id];
+  sql         = mysql.format(sql, inserts);
+
+  connResult = await conn(sql);
+
+  console.log(connResult);
+
+  return connResult;
+};
+
+async function fetchInterestData(id) {
+  var sql     = "SELECT * FROM db.interests WHERE ?? = ?";
+  var inserts = ["ID", id];
+  sql         = mysql.format(sql, inserts);
+
+  connResult = await conn(sql);
+
+  return connResult;
+}
+
+async function fetchInterests() {
+  var sql    = "SELECT * FROM db.interests";
+  connResult = await conn(sql);
+  return connResult;
+}
 
 
 async function fetchFriends() {
@@ -146,11 +209,8 @@ async function fetchFriends() {
   sql         = mysql.format(sql, inserts);
 
   connResult = await conn(sql);
-  friends = result;
 
   console.log(connResult);
-
-  //for(var i = 0; i < friends.length; )
 
   return connResult;
 };
@@ -319,6 +379,8 @@ function removeUser(userName) {
   });
 };
 
+
+// OTHER //
 
 function validateForm(form) {
   switch(form) {

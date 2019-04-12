@@ -1,5 +1,3 @@
-'use strict';
-
 // Modules
 const electron  = require('electron');
 const url       = require('url');
